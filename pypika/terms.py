@@ -1436,18 +1436,19 @@ class Function(Criterion):
         with_namespace = kwargs.pop("with_namespace", False)
         quote_char = kwargs.pop("quote_char", None)
         dialect = kwargs.pop("dialect", None)
+        parameter= kwargs.pop("parameter", None)
 
         # FIXME escape
-        function_sql = self.get_function_sql(with_namespace=with_namespace, quote_char=quote_char, dialect=dialect)
+        function_sql = self.get_function_sql(with_namespace=with_namespace, quote_char=quote_char, dialect=dialect, parameter=parameter)
 
         if self.schema is not None:
             function_sql = "{schema}.{function}".format(
-                schema=self.schema.get_sql(quote_char=quote_char, dialect=dialect, **kwargs),
+                schema=self.schema.get_sql(quote_char=quote_char, dialect=dialect, parameter=parameter, **kwargs),
                 function=function_sql,
             )
 
         if with_alias:
-            return format_alias_sql(function_sql, self.alias, quote_char=quote_char, **kwargs)
+            return format_alias_sql(function_sql, self.alias, quote_char=quote_char, parameter=parameter, **kwargs)
 
         return function_sql
 
