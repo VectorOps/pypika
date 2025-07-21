@@ -470,8 +470,11 @@ class ValueWrapper(Term):
             sql = self.get_value_sql(quote_char=quote_char, secondary_quote_char=secondary_quote_char, **kwargs)
             return format_alias_sql(sql, self.alias, quote_char=quote_char, **kwargs)
 
-        # Don't stringify any values, let driver or developer handle it
-        value_sql = self.value
+        # Don't stringify basic python types when using parameters
+        if isinstance(self.value, (bool, int, float, str, bytes, bytearray)):
+            value_sql = self.value
+        else:
+            value_sql = self.get_value_sql(quote_char=quote_char, **kwargs)
         param_sql, param_key = self._get_param_data(parameter, **kwargs)
         parameter.update_parameters(param_key=param_key, value=value_sql, **kwargs)
 
